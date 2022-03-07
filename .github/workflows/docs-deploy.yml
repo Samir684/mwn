@@ -33,8 +33,8 @@ jobs:
         uses: garygrossgarten/github-action-scp@dba89d858413133b6e35da91a3c989cc8cde3ad4
         with:
           local: ${{github.workspace}}/website/build/docs.zip
-          remote: /data/project/mwn/docs.zip
-          host: login.toolforge.org
+          remote: /var/www/html/docs.zip
+          host: 13.233.17.5
           username: ${{secrets.TOOLFORGE_USERNAME}}
           privateKey: ${{secrets.TOOLFORGE_PRIVATE_KEY}}
           rmRemote: true
@@ -47,6 +47,6 @@ jobs:
             rm -r -- !(coverage)
             unzip /data/project/mwn/docs.zip -d .
             rm /data/project/mwn/docs.zip
-          host: login.toolforge.org
-          username: ${{secrets.TOOLFORGE_USERNAME}}
-          privateKey: ${{secrets.TOOLFORGE_PRIVATE_KEY}}
+          host: 13.233.17.5
+          username: ${{secrets.USERNAME}}
+          privateKey: ${{secrets.PRIVATE_KEY}}
