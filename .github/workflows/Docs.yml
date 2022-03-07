@@ -1,0 +1,45 @@
+name: Docs deploy
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'README.md'
+  workflow_dispatch:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: npm install
+        run: npm ci
+      - name: build docs
+        run: npm run docs
+      - name: zipping docs
+        run: zip -r docs.zip docs
+      - name: Copy docs to Toolforge
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: /home/runner/work/mwn/mwn/docs.zip
+          remote: /var/www/html/docs.zip
+          host: 13.233.17.5
+          username: ${{ secrets.USERNAME }}
+          privateKey: ${{ secrets.PRIVATE_KEY }}
+          rmRemote: true
+      - name: unzip and copy
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: >-
+            cd /data/project/mwn &&
+            rm -rf docs &&
+            unzip docs.zip &&
+            #rm -rf public_html/docs &&
+            #rm -rf www/static/docs &&
+            #cp -r docs public_html &&
+            #cp -r docs www/static
+          host: 13.233.17.5
+          username: ${{ secrets.USERNAME }}
+          privateKey: ${{ secrets.PRIVATE_KEY }}
